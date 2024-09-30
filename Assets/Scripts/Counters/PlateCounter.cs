@@ -5,11 +5,13 @@ using UnityEngine;
 
 public class PlateCounter : BaseCounter
 {
-    public event EventHandler<OnPlateAddedEventArgs> OnPlateAmountChanged;
+    public event EventHandler OnPlateAdded;
+    public event EventHandler OnPlateRemoved;
 
-    public class OnPlateAddedEventArgs : EventArgs
+    private enum ChangePlateAmountMode
     {
-        public int amount;
+        Add,
+        Take
     }
 
     [SerializeField]
@@ -26,15 +28,15 @@ public class PlateCounter : BaseCounter
 
     private void Update()
     {
-        platecounterTimer += Time.deltaTime;
-
-        if (platecounterTimer > platecounterTimerMax)
+        if (plateAmount < plateAmountMax)
         {
-            platecounterTimer = 0;
+            platecounterTimer += Time.deltaTime;
 
-            if (plateAmount < plateAmountMax)
+            if (platecounterTimer > platecounterTimerMax)
             {
-                ChangePlateAmount(plateAmount + 1);
+                platecounterTimer = 0;
+
+                ChangePlateAmount(ChangePlateAmountMode.Add);
             }
         }
     }
@@ -44,18 +46,26 @@ public class PlateCounter : BaseCounter
         if (!player.HasKitchenObject())
         {
             KitchenObject.SpawnKitchenObject(plateKitchenObjectSO, player);
-            ChangePlateAmount(plateAmount - 1);
+            ChangePlateAmount(ChangePlateAmountMode.Take);
         }
         else if (plateAmount < plateAmountMax)
         {
             Destroy(player.GetKitchenObject().gameObject);
-            ChangePlateAmount(plateAmount + 1);
+            ChangePlateAmount(ChangePlateAmountMode.Add);
         }
     }
 
-    private void ChangePlateAmount(int amount)
+    private void ChangePlateAmount(ChangePlateAmountMode mode)
     {
-        plateAmount = amount;
-        OnPlateAmountChanged?.Invoke(this, new OnPlateAddedEventArgs { amount = plateAmount });
+        if (mode == ChangePlateAmountMode.Add)
+        {
+            OnPlateAdded?.Invoke(this, EventArgs.Empty);
+            plateAmount++;
+        }
+        else
+        {
+            OnPlateRemoved?.Invoke(this, EventArgs.Empty);
+            plateAmount--;
+        }
     }
 }

@@ -359,7 +359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   plateCounter: {fileID: 8202843276453355231}
-  plateVisualPrefab: {fileID: 3812876574508226176, guid: c0c9afd619b40914a8f625c0535e2284,
+  plateVisualPrefab: {fileID: 3360668823849679654, guid: b4f1dc5d4f2b05841a5157d2080d1bd7,
     type: 3}
   counterTopPoint: {fileID: 3700771418679453567}
   plateOffsetY: 0.1
