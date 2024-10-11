@@ -48,11 +48,6 @@ public class PlateCounter : BaseCounter
             KitchenObject.SpawnKitchenObject(plateKitchenObjectSO, player);
             ChangePlateAmount(ChangePlateAmountMode.Take);
         }
-        else if (plateAmount < plateAmountMax)
-        {
-            Destroy(player.GetKitchenObject().gameObject);
-            ChangePlateAmount(ChangePlateAmountMode.Add);
-        }
     }
 
     private void ChangePlateAmount(ChangePlateAmountMode mode)
