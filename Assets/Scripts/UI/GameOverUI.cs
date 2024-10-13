@@ -2,11 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameOverUI : MonoBehaviour
 {
     [SerializeField]
     private TextMeshProUGUI recipeDeliveredCountText;
+
+    [SerializeField]
+    private Button RetryButton;
+
+    [SerializeField]
+    private Button MainMenuButton;
+
+    private void Awake()
+    {
+        RetryButton.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        });
+        MainMenuButton.onClick.AddListener(() =>
+        {
+            SceneManager.LoadScene(0);
+        });
+    }
 
     private void Start()
     {
