@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
 public class PlateCounter : BaseCounter
@@ -28,26 +29,57 @@ public class PlateCounter : BaseCounter
 
     private void Update()
     {
+        if (!IsServer)
+        {
+            return;
+        }
+
         if (plateAmount < plateAmountMax)
         {
             platecounterTimer += Time.deltaTime;
 
             if (platecounterTimer > platecounterTimerMax)
             {
-                platecounterTimer = 0;
-
-                ChangePlateAmount(ChangePlateAmountMode.Add);
+                SpawnPlateServerRpc();
             }
         }
+    }
+
+    [ServerRpc]
+    private void SpawnPlateServerRpc()
+    {
+        SpawnPlateCLientRpc();
+    }
+
+    [ClientRpc]
+    private void SpawnPlateCLientRpc()
+    {
+        platecounterTimer = 0;
+
+        ChangePlateAmount(ChangePlateAmountMode.Add);
     }
 
     public override void Interact(Player player)
     {
         if (!player.HasKitchenObject())
         {
+            // KitchenObject.SpawnKitchenObject(plateKitchenObjectSO, player);
+            // ChangePlateAmount(ChangePlateAmountMode.Take);
             KitchenObject.SpawnKitchenObject(plateKitchenObjectSO, player);
-            ChangePlateAmount(ChangePlateAmountMode.Take);
+            InteractLogicServerRpc();
         }
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    private void InteractLogicServerRpc()
+    {
+        InteractLogicClientRpc();
+    }
+
+    [ClientRpc]
+    private void InteractLogicClientRpc()
+    {
+        ChangePlateAmount(ChangePlateAmountMode.Take);
     }
 
     private void ChangePlateAmount(ChangePlateAmountMode mode)

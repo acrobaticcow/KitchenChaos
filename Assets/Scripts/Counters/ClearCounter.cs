@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class ClearCounter : BaseCounter
 {
-    [SerializeField]
-    private KitchenObjectsSO kitchenObjectSO;
-
     private void Update() { }
 
     public override void Interact(Player player)
@@ -29,7 +26,7 @@ public class ClearCounter : BaseCounter
             )
             {
                 if (plateKitchenObject.TryAddIngredients(GetKitchenObject().GetKitchenObjectSO()))
-                    GetKitchenObject().DestroySelf();
+                    KitchenObject.DestroyKitchenObject(GetKitchenObject());
             }
             else if (GetKitchenObject().TryGetPlate(out plateKitchenObject))
                 if (
@@ -37,7 +34,7 @@ public class ClearCounter : BaseCounter
                         player.GetKitchenObject().GetKitchenObjectSO()
                     )
                 )
-                    player.GetKitchenObject().DestroySelf();
+                    KitchenObject.DestroyKitchenObject(player.GetKitchenObject());
         }
     }
 }

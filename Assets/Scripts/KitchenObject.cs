@@ -1,15 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.Netcode;
 using UnityEngine;
 
-public class KitchenObject : MonoBehaviour
+public class KitchenObject : NetworkBehaviour
 {
     [SerializeField]
     private KitchenObjectsSO KitchenObjectsSO;
 
     private IKitchenObjectParent kitchenObjectParent;
     private float currentActionProgress;
+    private FollowTransform followTransform;
 
     public float CurrentActionProgress
     {
@@ -27,8 +29,29 @@ public class KitchenObject : MonoBehaviour
         return KitchenObjectsSO;
     }
 
+    protected virtual void Awake()
+    {
+        followTransform = GetComponent<FollowTransform>();
+    }
+
     public void SetKitchenObjectParent(IKitchenObjectParent kitchenObjectParent)
     {
+        SetKitchenObjectParentServerRpc(kitchenObjectParent.GetNetWorkObject());
+    }
+
+    [ServerRpc(RequireOwnership = false)]
+    public void SetKitchenObjectParentServerRpc(NetworkObjectReference kitchenObjectParentNOR)
+    {
+        SetKitchenObjectParentClientRpc(kitchenObjectParentNOR);
+    }
+
+    [ClientRpc]
+    public void SetKitchenObjectParentClientRpc(NetworkObjectReference kitchenObjectParentNOR)
+    {
+        kitchenObjectParentNOR.TryGet(out NetworkObject kitchenObjectParentNetworkObject);
+        var kitchenObjectParent =
+            kitchenObjectParentNetworkObject.GetComponent<IKitchenObjectParent>();
+
         this.kitchenObjectParent?.ClearKitchenObject();
 
         this.kitchenObjectParent = kitchenObjectParent;
@@ -36,26 +59,33 @@ public class KitchenObject : MonoBehaviour
             Debug.LogError("This clearCounter already have a kitchen object");
         kitchenObjectParent.SetKitchenObject(this);
 
-        transform.parent = kitchenObjectParent.GetKitchenObjectFollowTransform();
-        transform.localPosition = Vector3.zero;
+        followTransform.SetTargetTransform(kitchenObjectParent.GetKitchenObjectFollowTransform());
     }
 
     public void DestroySelf()
     {
-        kitchenObjectParent.ClearKitchenObject();
         Destroy(gameObject);
     }
 
-    public static KitchenObject SpawnKitchenObject(
+    public void ClearKitchenObjectOnParent()
+    {
+        kitchenObjectParent.ClearKitchenObject();
+    }
+
+    public static void SpawnKitchenObject(
         KitchenObjectsSO kitchenObjectSO,
         IKitchenObjectParent kitchenObjectParent
     )
     {
-        Transform kitchenObjectTransform = Instantiate(kitchenObjectSO.Prefab);
-        var kitchenObject = kitchenObjectTransform.GetComponent<KitchenObject>();
-        kitchenObject.SetKitchenObjectParent(kitchenObjectParent);
+        KitchenGameObjectMultiplayer.Instance.SpawnKitchenObject(
+            kitchenObjectSO,
+            kitchenObjectParent
+        );
+    }
 
-        return kitchenObject;
+    public static void DestroyKitchenObject(KitchenObject kitchenObject)
+    {
+        KitchenGameObjectMultiplayer.Instance.DestroyKitchenObject(kitchenObject);
     }
 
     public class ProgressChangedEventArgs : EventArgs

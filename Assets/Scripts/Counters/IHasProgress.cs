@@ -12,5 +12,5 @@ public interface IHasProgress
         }
     }
 
-    public abstract event EventHandler<ProgressChangedEventArgs> ProgressChanged;
+    public abstract event EventHandler<ProgressChangedEventArgs> OnProgressChanged;
 }

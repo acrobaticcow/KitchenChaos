@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
     public event EventHandler OnUnPauseGame;
     public static GameManager Instance;
     public event EventHandler<OnStateChangedEventArg> OnStateChanged;
+    public event EventHandler OnLocalPlayerReadyChanged;
 
     public class OnStateChangedEventArg : EventArgs
     {
@@ -24,6 +25,7 @@ public class GameManager : MonoBehaviour
     }
 
     private State state;
+    private bool isLocalPlayerReady = false;
     private float waitingToStartTimer = .5f;
     private float countDownToStartTimer = 3f;
     private float gamePlayingTimer;
@@ -78,6 +80,17 @@ public class GameManager : MonoBehaviour
     private void GameInput_OnPause(object sender, EventArgs e)
     {
         TogglePauseGame();
+    }
+
+    public bool GetIsLocalPlayerReady()
+    {
+        return isLocalPlayerReady;
+    }
+
+    public void SetIsLocalPlayerReady(bool value)
+    {
+        isLocalPlayerReady = value;
+        OnLocalPlayerReadyChanged?.Invoke(this, EventArgs.Empty);
     }
 
     public void TogglePauseGame()

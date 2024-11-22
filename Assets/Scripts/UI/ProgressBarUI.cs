@@ -21,7 +21,7 @@ public class ProgressBarUI : MonoBehaviour
                 hasProgressGameObject + "doesn't have componenet that implement IHasProgress"
             );
 
-        hasProgress.ProgressChanged += HasProgress_OnProgressChanged;
+        hasProgress.OnProgressChanged += HasProgress_OnProgressChanged;
 
         barImage.fillAmount = 0f;
 

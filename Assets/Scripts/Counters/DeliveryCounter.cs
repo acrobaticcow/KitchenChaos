@@ -9,7 +9,7 @@ public class DeliveryCounter : BaseCounter
         if (player.GetKitchenObject().TryGetPlate(out PlateKitchenObject plateKitchenObject))
         {
             DeliveryManager.Instance.DeliveredRecipe(plateKitchenObject);
-            plateKitchenObject.DestroySelf();
+            KitchenObject.DestroyKitchenObject(player.GetKitchenObject());
         }
     }
 }

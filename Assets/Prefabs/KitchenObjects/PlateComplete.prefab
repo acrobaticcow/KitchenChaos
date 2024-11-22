@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4085302913684826780}
   - component: {fileID: 6584223892375841311}
+  - component: {fileID: 2377091737154971764}
   m_Layer: 0
   m_Name: PlateComplete
   m_TagString: Untagged
@@ -43,6 +44,20 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4fb82a2768d024c4ea61f87e35019234, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  kitchenObjectSOGameObjectList: []
+  plateKitchenObject: {fileID: 0}
+--- !u!114 &2377091737154971764
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5352303510383874605}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b113a55bf2a7b03479f4abd80fd19ee4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1001 &1847854883070304154
